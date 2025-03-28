@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.elin.stocksim_back.mappers.UserMapper">
+    <!--    role -->
+    <resultMap id="roleResultMap" type="com.elin.stocksim_back.entity.Role">
+        <id property="roleId" column="rt_role_id"/>
+        <result property="roleName" column="role_name"/>
+    </resultMap>
+
+    <!--    user role -->
+    <resultMap id="userRoleResultMap" type="com.elin.stocksim_back.entity.UserRole">
+        <id property="userRoleId" column="urt_user_role_id"/>
+        <result property="userId" column="urt_user_id"/>
+        <result property="roleId" column="urt_role_id"/>
+        <association property="role" resultMap="roleResultMap"/>
+    </resultMap>
+
+    <!--    user -->
+    <resultMap id="userResultMap" type="com.elin.stocksim_back.entity.User">
+        <id property="userId" column="ut_user_id"/>
+        <result property="email" column="email"/>
+        <result property="password" column="password"/>
+        <result property="name" column="name"/>
+        <result property="phoneNum" column="phone_num"/>
+        <result property="balance" column="balance"/>
+        <result property="accountExpired" column="account_expired"/>
+        <result property="accountVerified" column="account_verified"/>
+        <result property="roleId" column="ut_role_id"/>
+        <association property="userRoles" resultMap="userRoleResultMap"/>
+    </resultMap>
+
+    <!--    회원가입 -->
+    <insert id="save" useGeneratedKeys="true" keyProperty="userId">
+        insert into user_tb
+        values(default, #{email}, #{password}, #{name}, #{phoneNum}, 0, 0, 0, #{roleId})
+    </insert>
+
+    <!--    userId로 user 단건 조회 -->
+    <select id="getUserByUserId" resultMap="userResultMap">
+        select
+        ut.user_id as ut_user_id,
+        ut.email,
+        ut.name,
+        ut.phone_num,
+        ut.balance,
+        ut.account_expired,
+        ut.account_verified,
+        ut.role_id as ut_role_id,
+
+        urt.user_role_id as urt_user_role_id,
+        urt.user_id as urt_user_id,
+        urt.role_id as urt_role_id,
+
+        rt.role_id as rt_role_id,
+        rt.role_name
+        from
+        user_tb ut
+        left outer join user_role_tb urt on(ut.user_id = urt.user_id)
+        left outer join role_tb rt on(rt.role_id = urt.role_id)
+        where
+        ut.user_id = #{userId}
+    </select>
+    <select id="getUserByEmail" resultMap="userResultMap">
+        select
+        ut.user_id as ut_user_id,
+        ut.email,
+        ut.name,
+        ut.phone_num,
+        ut.balance,
+        ut.account_expired,
+        ut.account_verified,
+        ut.role_id as ut_role_id,
+
+        urt.user_role_id as urt_user_role_id,
+        urt.user_id as urt_user_id,
+        urt.role_id as urt_role_id,
+
+        rt.role_id as rt_role_id,
+        rt.role_name
+        from
+        user_tb ut
+        left outer join user_role_tb urt on(ut.user_id = urt.user_id)
+        left outer join role_tb rt on(rt.role_id = urt.role_id)
+        where
+        ut.email = #{email}
+    </select>
+</mapper>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.elin.stocksim_back.mappers.RoleMapper">
+    <!--    role -->
+    <resultMap id="roleResultMap" type="com.elin.stocksim_back.entity.Role">
+        <id property="roleId" column="role_id"/>
+        <result property="roleName" column="role_name"/>
+    </resultMap>
+
+    <!--    roleId로 role 단건 조회 -->
+    <select id="getRoleByRoleId" resultMap="roleResultMap">
+        select
+        role_id,
+        role_name
+        from
+        role_tb
+        where
+        role_id = #{roleId}
+    </select>
+
+</mapper>
