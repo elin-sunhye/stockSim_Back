@@ -6,7 +6,9 @@ import com.elin.stocksim_back.exception.NotFoundValueException;
 import com.elin.stocksim_back.repository.UserRepository;
 import com.elin.stocksim_back.security.jwt.JwtUtil;
 import com.elin.stocksim_back.security.principal.PrincipalUser;
+import com.elin.stocksim_back.service.RedisTokenService;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,9 @@ public class JwtAuthenticationFilter implements Filter {
     private JwtUtil jwtUtil;
 
     @Autowired
+    private RedisTokenService redisTokenService;
+
+    @Autowired
     private UserRepository userRepository;
 
     @Override
@@ -44,18 +49,21 @@ public class JwtAuthenticationFilter implements Filter {
 //            파싱
             Claims claims = jwtUtil.parseToken(accessToken);
 
-            if (claims != null) {
+
+            if (claims == null) {
+                throw new JwtException("유효하지 않은 토큰입니다.");
+            }
+
 //                인증절차
 //                파싱한 토큰의 정보에서 인증에 필요한 정보 get
-                int userId = Integer.parseInt(claims.getId());
-                String email = claims.getSubject();
+            int userId = Integer.parseInt(claims.getId());
+            String email = claims.getSubject();
 
 //                파싱한 토큰에 있던 정보로 유저 찾기
-                User foundUser = getUser(userId);
+            User foundUser = getUser(userId);
 
 //                찾은 유저 principalUser에 build하고, 인증 사용자 권한 설정 및 정보 저장
-                setAuthentication(foundUser);
-            }
+            setAuthentication(foundUser);
         }
 
         filterChain.doFilter(servletRequest, servletResponse);

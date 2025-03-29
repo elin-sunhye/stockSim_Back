@@ -20,19 +20,4 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
     @Autowired
     UserService userService;
-
-    @Operation(
-            summary = "회원가입",
-            description = "유저 등록"
-    )
-    @PostMapping("/auth/signup")
-    public ResponseEntity<RespSignUpDto> signUp(@RequestBody ReqSignUpDto dto) {
-        return ResponseEntity.ok().body(userService.signUp(dto));
-    }
-
-    @Operation(summary = "로그인")
-    @PostMapping("/auth/signup")
-    public ResponseEntity<String> signIn(@RequestBody ReqSignInDto dto) {
-        return ResponseEntity.ok().body(userService.signIn(dto));
-    }
 }

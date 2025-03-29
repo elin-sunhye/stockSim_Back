@@ -12,7 +12,7 @@ public class UserRepository {
     @Autowired
     private UserMapper userMapper;
 
-    //    로그인
+    //    회원가입
     public int save(User user) {
         return userMapper.save(user);
     }
