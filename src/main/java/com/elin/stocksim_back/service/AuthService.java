@@ -4,7 +4,6 @@ import com.elin.stocksim_back.dto.request.ReqSignInDto;
 import com.elin.stocksim_back.dto.request.ReqSignUpDto;
 import com.elin.stocksim_back.dto.response.RespAuthDto;
 import com.elin.stocksim_back.dto.response.RespSignUpDto;
-import com.elin.stocksim_back.entity.Role;
 import com.elin.stocksim_back.entity.User;
 import com.elin.stocksim_back.entity.UserRole;
 import com.elin.stocksim_back.exception.DuplicatedValueException;
@@ -109,6 +108,8 @@ public class AuthService {
 //        유저 찾기
         User foundUser = userRepository.getUserByEmail(dto.getEmail())
                 .orElseThrow(() -> new UsernameNotFoundException("email: 사용자 정보를 확인하세요."));
+
+        System.out.println(foundUser);
 
 //        여기서 자꾸 에러 남
 //        password 일치하지 않으면

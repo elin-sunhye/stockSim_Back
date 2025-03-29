@@ -19,7 +19,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * 헤더에 받아온 토큰 파싱해서 user_tb에 있는 user_id와 동일한 정보가 있는지 확인 후 Principal User에 user를 빌드해서 set
