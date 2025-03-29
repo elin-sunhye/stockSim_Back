@@ -26,4 +26,5 @@ public class UserRepository {
     public Optional<User> getUserByEmail(String email) {
         return Optional.ofNullable(userMapper.getUserByEmail(email));
     }
+
 }

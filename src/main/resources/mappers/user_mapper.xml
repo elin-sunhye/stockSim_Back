@@ -29,14 +29,13 @@
         <result property="balance" column="balance"/>
         <result property="accountExpired" column="account_expired"/>
         <result property="accountVerified" column="account_verified"/>
-        <result property="roleId" column="ut_role_id"/>
         <association property="userRoles" resultMap="userRoleResultMap"/>
     </resultMap>
 
     <!--    회원가입 -->
     <insert id="save" useGeneratedKeys="true" keyProperty="userId">
         insert into user_tb
-        values(default, #{email}, #{password}, #{name}, #{phoneNum}, 0, 0, 0, #{roleId})
+        values(default, #{email}, #{password}, #{name}, #{phoneNum}, 0, 0, 0)
     </insert>
 
     <!--    userId로 user 단건 조회 -->
@@ -49,7 +48,6 @@
         ut.balance,
         ut.account_expired,
         ut.account_verified,
-        ut.role_id as ut_role_id,
 
         urt.user_role_id as urt_user_role_id,
         urt.user_id as urt_user_id,
@@ -73,7 +71,6 @@
         ut.balance,
         ut.account_expired,
         ut.account_verified,
-        ut.role_id as ut_role_id,
 
         urt.user_role_id as urt_user_role_id,
         urt.user_id as urt_user_id,

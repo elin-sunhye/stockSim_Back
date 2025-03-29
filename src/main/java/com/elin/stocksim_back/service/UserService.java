@@ -1,5 +1,6 @@
 package com.elin.stocksim_back.service;
 
+import com.elin.stocksim_back.dto.request.ReqSignInDto;
 import com.elin.stocksim_back.dto.request.ReqSignUpDto;
 import com.elin.stocksim_back.dto.response.RespSignUpDto;
 import com.elin.stocksim_back.entity.User;
@@ -31,16 +32,18 @@ public class UserService {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
-    //    이메일 중복확인
+    //    이메일 확인
     private boolean duplicateEmail(String email) {
         return userRepository.getUserByEmail(email).isPresent();
     }
 
-    //    roleId 유효성 확인
+    //    roleId 확인
     private boolean validRoleId(int roleId) {
         return roleRepository.getRoleByRoleId(roleId).isPresent();
     }
 
+
+    //    회원가입
     @Transactional(rollbackFor = Exception.class)
     public RespSignUpDto signUp(ReqSignUpDto dto) {
 //        저장 전 중복 확인
@@ -64,7 +67,6 @@ public class UserService {
                 .email(dto.getEmail())
                 .password(passwordEncoder.encode(dto.getPassword()))
                 .name(dto.getName())
-                .roleId(dto.getRoleId())
                 .build();
 
         userRepository.save(newUser);
@@ -82,5 +84,21 @@ public class UserService {
         respSignUpDto.setUserId(newUser.getUserId());
 
         return respSignUpDto;
+    }
+
+    //    로그인
+    public String signIn(ReqSignInDto dto) {
+//        user 이메일 확인 오케이 되면  200 아니면 예외
+        if (!duplicateEmail(dto.getEmail())) {
+            throw new NotFoundValueException(List.of(FieldError.builder()
+                    .field("email")
+                    .message("존재하지 않은 사용자입니다.")
+                    .build()));
+        }
+
+
+//        password 일치 확인 오케이면 200 아니면 예외
+//        userRepository.getUserByEmail(email)
+        return "";
     }
 }
