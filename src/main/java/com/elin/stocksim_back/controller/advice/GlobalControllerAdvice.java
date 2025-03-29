@@ -1,6 +1,7 @@
 package com.elin.stocksim_back.controller.advice;
 
 import com.elin.stocksim_back.exception.DuplicatedValueException;
+import com.elin.stocksim_back.exception.NotFoundValueException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -11,8 +12,14 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class GlobalControllerAdvice {
+    @ExceptionHandler(NotFoundValueException.class)
+    //    security에서 notFoundException 지원 안하기 때문에 커스텀 notFoundException 사용
+    public ResponseEntity<?> notFoundException(NotFoundValueException e) {
+        return ResponseEntity.badRequest().body(e.getFieldErrors());
+    }
+
     @ExceptionHandler(DuplicatedValueException.class)
-    //    security에서 duplicateException은 지원 안하기 때문에 커스텀 DuplicatedValueException을 사용
+    //    security에서 duplicateException 지원 안하기 때문에 커스텀 DuplicatedValueException 사용
     public ResponseEntity<?> duplicatedException(DuplicatedValueException e) {
         return ResponseEntity.badRequest().body(e.getFieldErrors());
     }

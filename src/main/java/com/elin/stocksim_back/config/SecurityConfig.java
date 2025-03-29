@@ -1,6 +1,7 @@
 package com.elin.stocksim_back.config;
 
 import com.elin.stocksim_back.security.filter.JwtAuthenticationFilter;
+import com.elin.stocksim_back.security.handler.CustomAuthenticationEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,6 +19,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class SecurityConfig {
     @Autowired
     private JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    @Autowired
+    private CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
     //    비밀번호 인코딩
     @Bean
@@ -38,22 +42,17 @@ public class SecurityConfig {
 
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
+        http.exceptionHandling(exception ->
+                exception.authenticationEntryPoint(customAuthenticationEntryPoint)
+        );
+
         http.authorizeHttpRequests(auth ->
                 auth
-                        .requestMatchers(
-                                "/swagger-ui/**",
-                                "/v3/api-docs/**",
-                                "/swagger-resources/**"
-                        )
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**")
                         .permitAll()
-                        .requestMatchers(
-                                "/api/auth/**",
-                                "/api/redis/**"
-                        )
+                        .requestMatchers("/api/auth/**", "/api/redis/**")
                         .permitAll()
-                        .requestMatchers(
-                                "/img/**"
-                        )
+                        .requestMatchers("/img/**")
                         .permitAll()
                         .anyRequest()
                         .authenticated()
