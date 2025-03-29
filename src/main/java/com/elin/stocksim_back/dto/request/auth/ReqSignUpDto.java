@@ -1,4 +1,4 @@
-package com.elin.stocksim_back.dto.request;
+package com.elin.stocksim_back.dto.request.auth;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;

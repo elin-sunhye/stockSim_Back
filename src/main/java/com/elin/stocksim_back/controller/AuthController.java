@@ -1,10 +1,10 @@
 package com.elin.stocksim_back.controller;
 
 
-import com.elin.stocksim_back.dto.request.ReqSignInDto;
-import com.elin.stocksim_back.dto.request.ReqSignUpDto;
-import com.elin.stocksim_back.dto.response.RespAuthDto;
-import com.elin.stocksim_back.dto.response.RespSignUpDto;
+import com.elin.stocksim_back.dto.request.auth.ReqSignInDto;
+import com.elin.stocksim_back.dto.request.auth.ReqSignUpDto;
+import com.elin.stocksim_back.dto.response.auth.RespAuthDto;
+import com.elin.stocksim_back.dto.response.auth.RespSignUpDto;
 import com.elin.stocksim_back.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

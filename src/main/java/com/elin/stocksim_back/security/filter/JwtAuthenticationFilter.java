@@ -7,17 +7,21 @@ import com.elin.stocksim_back.repository.UserRepository;
 import com.elin.stocksim_back.security.jwt.JwtUtil;
 import com.elin.stocksim_back.security.principal.PrincipalUser;
 import com.elin.stocksim_back.service.RedisTokenService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.util.List;
 
 /**
@@ -30,7 +34,10 @@ public class JwtAuthenticationFilter implements Filter {
     private JwtUtil jwtUtil;
 
     @Autowired
-    private RedisTokenService redisTokenService;
+    private RedisTemplate<String, Object> redisTemplate;
+
+    @Autowired
+    private ObjectMapper objMapper;
 
     @Autowired
     private UserRepository userRepository;
@@ -84,11 +91,28 @@ public class JwtAuthenticationFilter implements Filter {
     }
 
     //    user_tb에 있는 user_id와 동일한지 확인
-    private User getUser(int userId) {
-        return userRepository.getUserByUserId(userId).orElseThrow(() -> new NotFoundValueException(List.of(FieldError.builder()
-                .field("userId")
-                .message("유효하지 않은 사용자입니다.")
-                .build())));
+    private User getUser(int userId) throws JsonProcessingException {
+        User user = null;
+
+        Object redisUser = redisTemplate.opsForValue().get("user:" + userId);
+
+        if (redisUser != null) {
+            user = objMapper.readValue(redisUser.toString(), User.class);
+        } else {
+            user = userRepository.getUserByUserId(userId).get();
+
+            if (user != null) {
+                String jsonUser = objMapper.writeValueAsString(user);
+                redisTemplate.opsForValue().set("user:" + userId, jsonUser, Duration.ofMinutes(10));
+            }
+        }
+
+        return user;
+
+//        return userRepository.getUserByUserId(userId).orElseThrow(() -> new NotFoundValueException(List.of(FieldError.builder()
+//                .field("userId")
+//                .message("유효하지 않은 사용자입니다.")
+//                .build())));
     }
 
     //    찾은 유저 principalUser에 build

@@ -1,9 +1,9 @@
 package com.elin.stocksim_back.service;
 
-import com.elin.stocksim_back.dto.request.ReqSignInDto;
-import com.elin.stocksim_back.dto.request.ReqSignUpDto;
-import com.elin.stocksim_back.dto.response.RespAuthDto;
-import com.elin.stocksim_back.dto.response.RespSignUpDto;
+import com.elin.stocksim_back.dto.request.auth.ReqSignInDto;
+import com.elin.stocksim_back.dto.request.auth.ReqSignUpDto;
+import com.elin.stocksim_back.dto.response.auth.RespAuthDto;
+import com.elin.stocksim_back.dto.response.auth.RespSignUpDto;
 import com.elin.stocksim_back.entity.User;
 import com.elin.stocksim_back.entity.UserRole;
 import com.elin.stocksim_back.exception.DuplicatedValueException;
@@ -57,7 +57,6 @@ public class AuthService {
     //    회원가입
     @Transactional(rollbackFor = Exception.class)
     public RespSignUpDto signUp(ReqSignUpDto dto) {
-        System.out.println(dto);
 
 //        저장 전 중복 확인
         if (duplicateEmail(dto.getEmail())) {
@@ -80,9 +79,8 @@ public class AuthService {
                 .email(dto.getEmail())
                 .password(passwordEncoder.encode(dto.getPassword()))
                 .name(dto.getName())
+                .phoneNum(dto.getPhoneNum())
                 .build();
-
-        System.out.println(newUser);
 
         userRepository.save(newUser);
 
@@ -92,8 +90,6 @@ public class AuthService {
                 .roleId(dto.getRoleId())
                 .build();
         userRoleRepository.save(userRole);
-
-        System.out.println(userRole);
 
         //        휴대폰 인증 여부 확인
 
@@ -109,9 +105,9 @@ public class AuthService {
         User foundUser = userRepository.getUserByEmail(dto.getEmail())
                 .orElseThrow(() -> new UsernameNotFoundException("email: 사용자 정보를 확인하세요."));
 
-        System.out.println(foundUser);
+        System.out.println("asd" + foundUser);
+        System.out.println(passwordEncoder.matches(dto.getPassword(), foundUser.getPassword()));
 
-//        여기서 자꾸 에러 남
 //        password 일치하지 않으면
         if (!passwordEncoder.matches(dto.getPassword(), foundUser.getPassword())) {
             throw new BadCredentialsException("password: 사용자 정보를 확인하세요.");

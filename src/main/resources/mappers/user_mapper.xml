@@ -43,6 +43,7 @@
         select
         ut.user_id as ut_user_id,
         ut.email,
+        ut.password,
         ut.name,
         ut.phone_num,
         ut.balance,
@@ -67,6 +68,7 @@
         ut.user_id as ut_user_id,
         ut.email,
         ut.name,
+        ut.password,
         ut.phone_num,
         ut.balance,
         ut.account_expired,
