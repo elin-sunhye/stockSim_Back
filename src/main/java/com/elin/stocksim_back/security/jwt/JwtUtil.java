@@ -25,13 +25,15 @@ public class JwtUtil {
 
         key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
 //        AccessToken 10분 ~ 1시간 (보안이 중요할수록 짧게)
-        accessTokenExpire = 1000l * 60 * 30; // 30분
+//        accessTokenExpire = 1000l * 60 * 30; // 30분
+        accessTokenExpire = 1000l * 60 * 5; // 5분
 //        RefreshToken 7일 ~ 90일 (보안이 중요할수록 짧게)
-        refreshTokenExpire = 1000l * 60 * 60 * 24 * 7; // 7일
+//        refreshTokenExpire = 1000l * 60 * 60 * 24 * 7; // 7일
+        refreshTokenExpire = 1000l * 60 * 10; // 10분
     }
 
-//    토큰 생성
-    public String generateToken (String userId, String email, boolean isRefreshToken) {
+    //    토큰 생성
+    public String generateToken(String userId, String email, boolean isRefreshToken) {
         return Jwts.builder()
                 .setId(userId)
                 .setSubject(email)
@@ -42,11 +44,11 @@ public class JwtUtil {
                 .compact();
     }
 
-//    프론트에서 보내준 토큰 파싱
+    //    프론트에서 보내준 토큰 파싱
     public Claims parseToken(String token) {
         Claims claims = null;
 
-        try{
+        try {
             claims = Jwts.parser()
                     .setSigningKey(key)
                     .parseClaimsJws(token)

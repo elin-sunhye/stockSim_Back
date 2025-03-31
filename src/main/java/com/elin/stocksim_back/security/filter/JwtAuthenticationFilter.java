@@ -119,7 +119,11 @@ public class JwtAuthenticationFilter implements Filter {
     private void setAuthentication(User foundUser) {
 //        foundUser가 없으면
         if (foundUser == null) {
-            return;
+//            return;
+            throw new NotFoundValueException(List.of(FieldError.builder()
+                    .field("user")
+                    .message("유효하지 않은 사용자입니다.")
+                    .build()));
         }
 
 //        foundUser가 있으면 새로운 principalUser

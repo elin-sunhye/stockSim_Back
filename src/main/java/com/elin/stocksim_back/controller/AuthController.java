@@ -27,7 +27,7 @@ public class AuthController {
             description = "유저 등록"
     )
     @PostMapping("/signup")
-    public ResponseEntity<RespSignUpDto> signUp(@RequestBody ReqSignUpDto dto) {
+    public ResponseEntity<RespSignUpDto> signUp(@RequestBody ReqSignUpDto dto) throws Exception {
         return ResponseEntity.ok().body(authService.signUp(dto));
     }
 
@@ -41,5 +41,11 @@ public class AuthController {
     @PostMapping("/token/refresh")
     public ResponseEntity<RespAuthDto> refresh(@RequestBody RespAuthDto reqRefreshDto) {
         return ResponseEntity.ok().body(authService.refresh(reqRefreshDto.getRefreshToken()));
+    }
+
+    @Operation(summary = "이메일 인증")
+    @PostMapping("/email")
+    public ResponseEntity<?> authenticateEmail() {
+        return ResponseEntity.ok().build();
     }
 }
