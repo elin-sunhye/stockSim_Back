@@ -27,4 +27,9 @@ public class UserRepository {
         return Optional.ofNullable(userMapper.getUserByEmail(email));
     }
 
+    //    email 인증 시 accountVerified 업데이트
+    public void updateAccountVerified(String email) {
+        userMapper.updateAccountVerifiedByEmail(email);
+    }
+
 }

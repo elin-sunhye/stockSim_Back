@@ -15,14 +15,21 @@ import com.elin.stocksim_back.repository.UserRoleRepository;
 import com.elin.stocksim_back.security.jwt.JwtUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -41,8 +48,12 @@ public class AuthService {
 
     @Autowired
     private JwtUtil jwtUtil;
+
     @Autowired
     private RedisTokenService redisTokenService;
+
+    @Autowired(required = false)
+    private JavaMailSender javaMailSender;
 
     //    이메일 확인
     public boolean duplicateEmail(String email) {
@@ -56,8 +67,7 @@ public class AuthService {
 
     //    회원가입
     @Transactional(rollbackFor = Exception.class)
-    public RespSignUpDto signUp(ReqSignUpDto dto) {
-
+    public RespSignUpDto signUp(ReqSignUpDto dto) throws Exception {
 //        저장 전 중복 확인
         if (duplicateEmail(dto.getEmail())) {
             throw new DuplicatedValueException(List.of(FieldError.builder()
@@ -74,6 +84,11 @@ public class AuthService {
                     .build()));
         }
 
+//        저장 전 인증확인
+//        if (dto.getVerifiedPhoneNum() == 0) {
+//            throw new AuthenticationCredentialsNotFoundException("인증되지 않은 사용자 입니다.");
+//        }
+
 //        새 유저 빌드해서 저장
         User newUser = User.builder()
                 .email(dto.getEmail())
@@ -81,7 +96,6 @@ public class AuthService {
                 .name(dto.getName())
                 .phoneNum(dto.getPhoneNum())
                 .build();
-
         userRepository.save(newUser);
 
 //        새 유저의 롤을 유저롤 데이블에 추가
@@ -90,8 +104,6 @@ public class AuthService {
                 .roleId(dto.getRoleId())
                 .build();
         userRoleRepository.save(userRole);
-
-        //        휴대폰 인증 여부 확인
 
         RespSignUpDto respSignUpDto = new RespSignUpDto();
         respSignUpDto.setUserId(newUser.getUserId());
@@ -102,11 +114,9 @@ public class AuthService {
     //    로그인
     public RespAuthDto signIn(ReqSignInDto dto) {
 //        유저 찾기
+        System.out.println(dto);
         User foundUser = userRepository.getUserByEmail(dto.getEmail())
                 .orElseThrow(() -> new UsernameNotFoundException("email: 사용자 정보를 확인하세요."));
-
-        System.out.println("asd" + foundUser);
-        System.out.println(passwordEncoder.matches(dto.getPassword(), foundUser.getPassword()));
 
 //        password 일치하지 않으면
         if (!passwordEncoder.matches(dto.getPassword(), foundUser.getPassword())) {
