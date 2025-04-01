@@ -14,4 +14,9 @@ public interface UserMapper {
 
     //    email로 user 단건 조회
     User getUserByEmail(@Param("email") String email);
+
+    //    email 인증 시 accountVerified 업데이트
+    int updateAccountVerifiedByEmail(
+            @Param("email") String email
+    );
 }

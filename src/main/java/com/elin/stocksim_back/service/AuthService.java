@@ -15,14 +15,21 @@ import com.elin.stocksim_back.repository.UserRoleRepository;
 import com.elin.stocksim_back.security.jwt.JwtUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -41,8 +48,12 @@ public class AuthService {
 
     @Autowired
     private JwtUtil jwtUtil;
+
     @Autowired
     private RedisTokenService redisTokenService;
+
+    @Autowired(required = false)
+    private JavaMailSender javaMailSender;
 
     //    이메일 확인
     public boolean duplicateEmail(String email) {
@@ -74,9 +85,9 @@ public class AuthService {
         }
 
 //        저장 전 인증확인
-        if (dto.getVerifiedEmail() == 0 || dto.getVerifiedPhoneNum() == 0) {
-            throw new Exception("인증되지 않은 사용자 입니다.");
-        }
+//        if (dto.getVerifiedPhoneNum() == 0) {
+//            throw new AuthenticationCredentialsNotFoundException("인증되지 않은 사용자 입니다.");
+//        }
 
 //        새 유저 빌드해서 저장
         User newUser = User.builder()

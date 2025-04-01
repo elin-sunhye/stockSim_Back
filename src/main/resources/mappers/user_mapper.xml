@@ -87,4 +87,11 @@
         where
         ut.email = #{email}
     </select>
+
+    <!--  email 인증 시 accountVerified 업데이트  -->
+    <update id="updateAccountVerifiedByEmail">
+        update user_tb
+        set account_verified = 1
+        where email = #{email}
+    </update>
 </mapper>

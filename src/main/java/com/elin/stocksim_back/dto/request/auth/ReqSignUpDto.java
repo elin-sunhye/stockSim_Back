@@ -9,9 +9,6 @@ public class ReqSignUpDto {
     @Schema(description = "유저 아이디(이메일)", example = "user@example.com")
     private String email;
 
-    @Schema(description = "유저 아이디(이메일) 인증", example = "1")
-    private int verifiedEmail;
-
     @Schema(description = "유저 비밀번호", example = "password123")
     private String password;
 
