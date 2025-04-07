@@ -41,7 +41,7 @@ public class AuthController {
             mailService.sendAuthenticateEmail(foundUser.getEmail());
         }
 
-        return ResponseEntity.ok().body(authService.signUp(dto));
+        return ResponseEntity.ok().body(newUserId);
     }
 
     @Operation(summary = "로그인")

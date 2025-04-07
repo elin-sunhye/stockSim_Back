@@ -36,10 +36,10 @@ public class MailService {
     private JavaMailSender javaMailSender;
 
     //    인증메일 보내기
-    public void sendAuthenticateEmail(String to) throws MessagingException {
-        Date expires = new Date(new Date().getTime() + (1000l * 60 * 5));
+    public void sendAuthenticateEmail(String to) throws Exception {
+//        Date expires = new Date(new Date().getTime() + (1000l * 60 * 5));
 //        메일 인증 토큰 생성
-        String emailToken = jwtUtil.generateToken(null, null, false);
+        String emailToken = jwtUtil.generateToken(null, null, "mailTokenExpire");
         String href = "http://localhost:8080/api/auth/email?email=" + to + "&token=" + emailToken;
 
         final String SUBJECT = "[stockSim] 계정 활성화 인증 메일입니다.";

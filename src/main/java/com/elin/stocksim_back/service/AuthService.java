@@ -67,9 +67,11 @@ public class AuthService {
 
     //    회원가입
     @Transactional(rollbackFor = Exception.class)
-    public RespSignUpDto signUp(ReqSignUpDto dto) throws Exception {
+    public RespSignUpDto signUp(ReqSignUpDto dto) {
+
 //        저장 전 중복 확인
         if (duplicateEmail(dto.getEmail())) {
+
             throw new DuplicatedValueException(List.of(FieldError.builder()
                     .field("email")
                     .message("이미 존재하는 사용자입니다.")
@@ -105,8 +107,9 @@ public class AuthService {
                 .build();
         userRoleRepository.save(userRole);
 
-        RespSignUpDto respSignUpDto = new RespSignUpDto();
-        respSignUpDto.setUserId(newUser.getUserId());
+        RespSignUpDto respSignUpDto = RespSignUpDto.builder()
+                .userId(newUser.getUserId())
+                .build();
 
         return respSignUpDto;
     }
@@ -124,8 +127,8 @@ public class AuthService {
         }
 
 //        다 오케이면 토큰 생성
-        String accessToken = jwtUtil.generateToken(Integer.toString(foundUser.getUserId()), foundUser.getEmail(), true);
-        String refreshToken = jwtUtil.generateToken(Integer.toString(foundUser.getUserId()), foundUser.getEmail(), false);
+        String accessToken = jwtUtil.generateToken(Integer.toString(foundUser.getUserId()), foundUser.getEmail(), "refreshTokenExpire");
+        String refreshToken = jwtUtil.generateToken(Integer.toString(foundUser.getUserId()), foundUser.getEmail(), "accessTokenExpire");
 
 //        redis에 token 저장
 //        기존 존재 시 덮어쓰기
@@ -158,7 +161,7 @@ public class AuthService {
         }
 
 //        새로운 accessToken 생성
-        String newAccessToken = jwtUtil.generateToken(userId, email, false);
+        String newAccessToken = jwtUtil.generateToken(userId, email, "accessTokenExpire");
 
         return RespAuthDto.builder()
                 .accessToken(newAccessToken)
