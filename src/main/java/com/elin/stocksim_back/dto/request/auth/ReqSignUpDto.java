@@ -15,7 +15,7 @@ public class ReqSignUpDto {
     @Schema(description = "유저 이름", example = "홍길동")
     private String name;
 
-    @Schema(description = "유저 전화번호", example = "010-1234-5678")
+    @Schema(description = "유저 전화번호", example = "01012345678")
     private String phoneNum;
 
     @Schema(description = "유저 전화번호 인증", example = "1")

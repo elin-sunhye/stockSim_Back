@@ -16,6 +16,7 @@ public class JwtUtil {
     private Key key;
     private Long accessTokenExpire;
     private Long refreshTokenExpire;
+    private Long mailTokenExpire;
 
     public JwtUtil(@Value("${jwt.secret}") String secret) {
         /**
@@ -25,20 +26,21 @@ public class JwtUtil {
 
         key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
 //        AccessToken 10분 ~ 1시간 (보안이 중요할수록 짧게)
-//        accessTokenExpire = 1000l * 60 * 30; // 30분
-        accessTokenExpire = 1000l * 60 * 5; // 5분
+        accessTokenExpire = 1000l * 60 * 30; // 30분
 //        RefreshToken 7일 ~ 90일 (보안이 중요할수록 짧게)
-//        refreshTokenExpire = 1000l * 60 * 60 * 24 * 7; // 7일
-        refreshTokenExpire = 1000l * 60 * 10; // 10분
+        refreshTokenExpire = 1000l * 60 * 60 * 24 * 7; // 7일
+//        MailToken 7일 ~ 90일 (보안이 중요할수록 짧게)
+        mailTokenExpire = 1000l * 1000l * 60 * 10;
+        ; // 10분
     }
 
     //    토큰 생성
-    public String generateToken(String userId, String email, boolean isRefreshToken) {
+    public String generateToken(String userId, String email, String tokenName) {
         return Jwts.builder()
                 .setId(userId)
                 .setSubject(email)
                 .setExpiration(
-                        new Date(System.currentTimeMillis() + (isRefreshToken ? refreshTokenExpire : accessTokenExpire))
+                        new Date(System.currentTimeMillis() + tokenName == "accessTokenExpire" ? accessTokenExpire : tokenName == "refreshTokenExpire" ? refreshTokenExpire : mailTokenExpire)
                 )
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
