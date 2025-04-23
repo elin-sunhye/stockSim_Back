@@ -20,13 +20,13 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/auth")
 public class AuthController {
     @Autowired
-    AuthService authService;
+    private AuthService authService;
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @Autowired
-    MailService mailService;
+    private MailService mailService;
 
     @Operation(
             summary = "회원가입",
@@ -46,7 +46,7 @@ public class AuthController {
 
     @Operation(summary = "로그인")
     @PostMapping("/signin")
-    public ResponseEntity<RespAuthDto> signIn(@RequestBody ReqSignInDto dto) {
+    public ResponseEntity<RespAuthDto> signIn(@RequestBody ReqSignInDto dto) throws Exception {
         return ResponseEntity.ok().body(authService.signIn(dto));
     }
 

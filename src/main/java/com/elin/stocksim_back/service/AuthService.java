@@ -52,8 +52,8 @@ public class AuthService {
     @Autowired
     private RedisTokenService redisTokenService;
 
-    @Autowired(required = false)
-    private JavaMailSender javaMailSender;
+    @Autowired
+    private MailService mailService;
 
     //    이메일 확인
     public boolean duplicateEmail(String email) {
@@ -115,9 +115,9 @@ public class AuthService {
     }
 
     //    로그인
-    public RespAuthDto signIn(ReqSignInDto dto) {
+    public RespAuthDto signIn(ReqSignInDto dto) throws Exception {
+
 //        유저 찾기
-        System.out.println(dto);
         User foundUser = userRepository.getUserByEmail(dto.getEmail())
                 .orElseThrow(() -> new UsernameNotFoundException("email: 사용자 정보를 확인하세요."));
 
@@ -126,9 +126,16 @@ public class AuthService {
             throw new BadCredentialsException("password: 사용자 정보를 확인하세요.");
         }
 
+//        다 오케이인데 accountVerified이 0이면
+        if (foundUser.getAccountVerified() == 0) {
+            mailService.sendAuthenticateEmail(foundUser.getEmail());
+            throw new AuthenticationCredentialsNotFoundException("email: 사용자 인증이 필요합니다.");
+        }
+
 //        다 오케이면 토큰 생성
         String accessToken = jwtUtil.generateToken(Integer.toString(foundUser.getUserId()), foundUser.getEmail(), "refreshTokenExpire");
         String refreshToken = jwtUtil.generateToken(Integer.toString(foundUser.getUserId()), foundUser.getEmail(), "accessTokenExpire");
+
 
 //        redis에 token 저장
 //        기존 존재 시 덮어쓰기

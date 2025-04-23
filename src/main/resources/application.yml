@@ -1,8 +1,9 @@
 spring:
   profiles:
-    active: local
+    active: live
     group:
       local: local_server, common, secret
+      live: live_server, common, secret
       #blue: blue_server, common, secret
 
 ---
@@ -21,6 +22,20 @@ react:
     port: 3000
 
 ---
+spring:
+  config:
+    activate:
+      on-profile: live_server
+
+server:
+  port: 8080
+#react:
+#  server:
+#    protocol: http
+#    host: localhost
+#    port: 3000
+
+---
 
 spring:
   config:
@@ -34,3 +49,9 @@ spring:
 mybatis:
   mapper-locations:
     - /mappers/*.xml
+
+springdoc:
+  override-with-generic-response: false
+
+server:
+  forward-headers-strategy: native
