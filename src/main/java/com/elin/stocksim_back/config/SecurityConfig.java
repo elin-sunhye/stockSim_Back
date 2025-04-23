@@ -1,6 +1,7 @@
 package com.elin.stocksim_back.config;
 
 import com.elin.stocksim_back.security.filter.JwtAuthenticationFilter;
+import com.elin.stocksim_back.security.handler.CustomAccessDeniedHandler;
 import com.elin.stocksim_back.security.handler.CustomAuthenticationEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -22,6 +23,8 @@ public class SecurityConfig {
 
     @Autowired
     private CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    @Autowired
+    private CustomAccessDeniedHandler customAccessDeniedHandler;
 
     //    비밀번호 인코딩
     @Bean
@@ -42,9 +45,10 @@ public class SecurityConfig {
 
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
-        http.exceptionHandling(exception ->
-                exception.authenticationEntryPoint(customAuthenticationEntryPoint)
-        );
+        http.exceptionHandling(exception -> {
+            exception.authenticationEntryPoint(customAuthenticationEntryPoint);
+            exception.accessDeniedHandler(customAccessDeniedHandler);
+        });
 
         http.authorizeHttpRequests(auth ->
                 auth
@@ -54,6 +58,8 @@ public class SecurityConfig {
                         .permitAll()
                         .requestMatchers("/img/**")
                         .permitAll()
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/user/**").hasRole("USER")
                         .anyRequest()
                         .authenticated()
         );
@@ -65,6 +71,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         final CorsConfiguration configuration = new CorsConfiguration();
+//        configuration.addAllowedOrigin("https://stocksim.store");
         configuration.addAllowedOriginPattern("*");
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");

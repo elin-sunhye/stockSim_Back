@@ -9,13 +9,15 @@
     <resultMap id="roleResultMap" type="com.elin.stocksim_back.entity.Role">
         <id property="roleId" column="role_id"/>
         <result property="roleName" column="role_name"/>
+        <result property="roleNameKor" column="role_name_kor"/>
     </resultMap>
 
     <!--    roleId로 role 단건 조회 -->
     <select id="getRoleByRoleId" resultMap="roleResultMap">
         select
         role_id,
-        role_name
+        role_name,
+        role_name_kor
         from
         role_tb
         where

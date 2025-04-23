@@ -28,6 +28,10 @@ import java.util.List;
  * 헤더에 받아온 토큰 파싱해서 user_tb에 있는 user_id와 동일한 정보가 있는지 확인 후 Principal User에 user를 빌드해서 set
  */
 
+/**
+ * JWT 토큰을 읽어서 유효성을 검사하고, 해당 유저를 SecurityContext에 설정하는 필터
+ */
+
 @Component
 public class JwtAuthenticationFilter implements Filter {
     @Autowired
@@ -44,8 +48,20 @@ public class JwtAuthenticationFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+        HttpServletRequest request = (HttpServletRequest) servletRequest;
+
+//        인증 없이 허용할 경로 추가
+//        String requestURI = request.getRequestURI();
+//        if (requestURI.startsWith("/api/auth")
+//                || requestURI.startsWith("/swagger")
+//                || requestURI.startsWith("/v3")
+//                || requestURI.startsWith("/img")) {
+//            filterChain.doFilter(servletRequest, servletResponse);
+//            return;
+//        }
+
 //        헤더 토큰값
-        String bearerToken = getAuthorization((HttpServletRequest) servletRequest);
+        String bearerToken = getAuthorization(request);
 
 //        유효성 체크
         if (isValidToken(bearerToken)) {

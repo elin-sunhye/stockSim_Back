@@ -9,6 +9,7 @@
     <resultMap id="roleResultMap" type="com.elin.stocksim_back.entity.Role">
         <id property="roleId" column="rt_role_id"/>
         <result property="roleName" column="role_name"/>
+        <result property="roleNameKor" column="role_name_kor"/>
     </resultMap>
 
     <!--    user role -->
@@ -55,7 +56,8 @@
         urt.role_id as urt_role_id,
 
         rt.role_id as rt_role_id,
-        rt.role_name
+        rt.role_name,
+        rt.role_name_kor
         from
         user_tb ut
         left outer join user_role_tb urt on(ut.user_id = urt.user_id)
@@ -79,7 +81,8 @@
         urt.role_id as urt_role_id,
 
         rt.role_id as rt_role_id,
-        rt.role_name
+        rt.role_name,
+        rt.role_name_kor
         from
         user_tb ut
         left outer join user_role_tb urt on(ut.user_id = urt.user_id)
