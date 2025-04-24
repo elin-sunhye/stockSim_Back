@@ -27,34 +27,37 @@ public class StockController {
             @Value(value = "${open-api.stock-secret-key}") String secretKey
     ) {
         this.BASE_URL = backUrl;
-        this.SERVICE_KEY = "?ServiceKey=" + secretKey;
+        this.SERVICE_KEY = "?serviceKey=" + secretKey;
     }
 
     @Operation(summary = "주식시세", description = "KRX에 상장된 주식의 시세 정보를 제공")
     @GetMapping("/getStockPriceInfo")
     public ResponseEntity<?> getStockList(@ModelAttribute ReqCommonListDto dto) {
-        System.out.println(dto);
-        System.out.println(BASE_URL);
-        System.out.println(SERVICE_KEY);
 
         final String PAGE_NO = "&pageNo=" + dto.getPage();
         final String NUM_OF_ROWS = "&numOfRows=" + dto.getLimitCount();
         final String ITEMS_NM = "&itmsNm=" + dto.getSearchText();
 
         String makeUrl = BASE_URL +
+                "/getStockPriceInfo" +
                 SERVICE_KEY +
                 PAGE_NO +
                 NUM_OF_ROWS +
-                ITEMS_NM;
+                ITEMS_NM + "&resultType=json";
 
         System.out.println(makeUrl);
 
         RestTemplate restTemplate = new RestTemplate();
         HttpEntity<?> entity = new HttpEntity<>(new HttpHeaders());
-        ResponseEntity<Map> resultMap = restTemplate.exchange(makeUrl, HttpMethod.GET, entity, Map.class);
+        ResponseEntity<String> resultMap = restTemplate.exchange(makeUrl, HttpMethod.GET, entity, String.class);
 
-        System.out.println(resultMap);
+        // 🔍 실제 Content-Type 확인
+//        System.out.println("응답 Content-Type: " + resultMap.getHeaders().getContentType());
+//        System.out.println("응답 바디: " + resultMap.getBody());
 
-        return ResponseEntity.ok().build();
+
+//        System.out.println(resultMap);
+
+        return ResponseEntity.ok().body(resultMap.getBody());
     }
 }
