@@ -15,7 +15,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Schema(description = "유저")
 public class User {
-    @Schema(description = "유저 고유 번호", example = "1")
+    @Schema(description = "유저 고유 아이디", example = "1")
     private int userId;
 
     @Schema(description = "유저 아이디(이메일)", example = "user@example.com")

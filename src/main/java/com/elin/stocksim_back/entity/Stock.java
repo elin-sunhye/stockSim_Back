@@ -12,6 +12,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Schema(description = "주식 시세 정보")
 public class Stock {
+    @Schema(description = "주식 고유 아이디")
+    private int stockId;
+
     @Schema(description = "기준일자")
     private String basDt;
 

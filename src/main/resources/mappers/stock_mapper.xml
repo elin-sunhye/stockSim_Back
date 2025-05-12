@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.elin.stocksim_back.mappers.StockMapper">
+    <!--   stock -->
+    <resultMap id="stockResultMap" type="com.elin.stocksim_back.entity.Stock">
+        <id property="stockId" column="stock_id"/>
+        <result property="basDt" column="bas_dt"/>
+        <result property="srtnCd" column="srtn_cd"/>
+        <result property="isinCd" column="isin_cd"/>
+        <result property="itmsNm" column="itms_nm"/>
+        <result property="mrktCtg" column="mrkt_ctg"/>
+        <result property="clpr" column="clpr"/>
+        <result property="vs" column="vs"/>
+        <result property="fltRt" column="flt_rt"/>
+        <result property="mkp" column="mkp"/>
+        <result property="hipr" column="hipr"/>
+        <result property="lopr" column="lopr"/>
+        <result property="trqu" column="trqu"/>
+        <result property="trPrc" column="tr_prc"/>
+        <result property="lstgStCnt" column="lstg_st_cnt"/>
+        <result property="mrktTotAmt" column="mrkt_tot_amt"/>
+    </resultMap>
+
+    <!--    주식 전체 조회 -->
+    <select id="getStockList" resultMap="stockResultMap">
+        select
+        stock_id,
+        bas_dt,
+        srtn_cd,
+        isin_cd,
+        itms_nm,
+        mrkt_ctg,
+        clpr,
+        vs,
+        flt_rt,
+        mkp,
+        hipr,
+        lopr,
+        trqu,
+        tr_prc,
+        lstg_st_cnt,
+        mrkt_tot_amt
+        from
+        stock_tb
+    </select>
+
+    <select id="getStockByStockId" resultMap="stockResultMap">
+        select
+        stock_id,
+        bas_dt,
+        srtn_cd,
+        isin_cd,
+        itms_nm,
+        mrkt_ctg,
+        clpr,
+        vs,
+        flt_rt,
+        mkp,
+        hipr,
+        lopr,
+        trqu,
+        tr_prc,
+        lstg_st_cnt,
+        mrkt_tot_amt
+        from
+        stock_tb
+        where
+        stock_id = #{stockId}
+    </select>
+
+    <!--    스케줄 주식 업데이트 저장  -->
+    <insert id="upsertStock">
+        insert into stock_tb
+        values (default, #{basDt}, #{srtnCd}, #{isinCd}, #{itmsNm}, #{mrktCtg}, #{clpr}, #{vs}, #{fltRt}, #{mkp},
+        #{hipr}, #{lopr}, #{trqu}, #{trPrc}, #{lstgStCnt}, #{mrktTotAmt})
+        on duplicate key
+        update
+        bas_dt = #{basDt},
+        srtn_cd = #{srtnCd},
+        isin_cd = #{isinCd},
+        itms_nm = #{itmsNm},
+        mrkt_ctg = #{mrktCtg},
+        clpr = #{clpr},
+        vs = #{vs},
+        flt_rt = #{fltRt},
+        mkp = #{mkp},
+        hipr = #{hipr},
+        lopr = #{lopr},
+        trqu = #{trqu},
+        tr_prc = #{trPrc},
+        lstg_st_cnt = #{lstgStCnt},
+        mrkt_tot_amt = #{mrktTotAmt}
+    </insert>
+
+
+</mapper>
