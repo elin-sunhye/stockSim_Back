@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.elin.stocksim_back.mappers.PortfolioMapper">
+    <!--   portfolio -->
+    <resultMap id="portfolioResultMap" type="com.elin.stocksim_back.entity.Portfolio">
+        <id property="portfolioId" column="portfolio_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="stockId" column="stock_id"/>
+        <result property="quantity" column="quantity"/>
+    </resultMap>
+
+    <!--    사용자 현재 보유 주식 전체 조회 -->
+    <select id="getPortfolioByUserId" resultMap="portfolioResultMap">
+        select
+        portfolio_id,
+        user_id,
+        stock_id,
+        quantity
+        from
+        portfolio_tb
+    </select>
+
+    <!--    사용자 현재 보유 주식 단건 조회 -->
+    <select id="getPortfolioByUserIdAndStockId" resultMap="portfolioResultMap">
+        select
+        portfolio_id,
+        user_id,
+        stock_id,
+        quantity
+        from
+        portfolio_tb
+        where user_id = #{userId}
+        and stock_id = #{stockId}
+    </select>
+
+    <!--    사용자 현재 보유 주식 저장  -->
+    <insert id="buyPortfolio" useGeneratedKeys="true" keyProperty="portfolio_id">
+        insert into user_tb
+        values(default, #{userId}, #{stockId}, #{quantity})
+    </insert>
+
+    <!--    사용자 현재 보유 주식 업데이트  -->
+    <update id="updatePortfolioByUserIdAndStockId">
+        update portfolio_tb
+        set quantity = #{quantity}
+        where user_id = #{userId}
+        and stock_id = #{stockId}
+    </update>
+
+    <!--    시용자 현재 보유 주식 삭제 -->
+    <delete id="deletePortfolioByUserIdAndStockId">
+        delete from portfolio_tb
+        where user_id = #{userId}
+        and stock_id = #{stockId}
+    </delete>
+</mapper>

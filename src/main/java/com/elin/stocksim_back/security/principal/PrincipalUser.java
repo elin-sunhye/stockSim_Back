@@ -25,7 +25,7 @@ public class PrincipalUser implements UserDetails {
                 .map(userRole -> new SimpleGrantedAuthority(userRole.getRole().getRoleName()))
                 .collect(Collectors.toList());
     }
-
+    
     @Override
     public String getPassword() {
         return user.getPassword();

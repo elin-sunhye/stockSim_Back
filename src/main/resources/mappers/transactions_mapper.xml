@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.elin.stocksim_back.mappers.TransactionsMapper">
+    <!--   transaction -->
+    <resultMap id="transactionResultMap" type="com.elin.stocksim_back.entity.Transactions">
+        <id property="transactionId" column="transaction_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="stockId" column="stock_id"/>
+        <result property="transactionType" column="transaction_type"/>
+        <result property="quantity" column="quantity"/>
+        <result property="priceAtTransaction" column="price_at_transaction"/>
+        <result property="transactionDate" column="transaction_date"/>
+    </resultMap>
+
+    <!--    사용자 주식 거래 내역 전체 조회  -->
+    <select id="getTransactionsByUserId" resultMap="transactionResultMap">
+        select
+        transaction_id,
+        user_id,
+        stock_id,
+        transaction_type,
+        quantity,
+        price_at_transaction,
+        transaction_date
+        from
+        transactions_tb
+        where
+        user_id = #{userId}
+    </select>
+
+    <!--    사용자 주식 거래 내역 저장  -->
+    <insert id="addTransactions">
+        insert into transactions_tb
+        values (default, #{userId}, #{stockId}, #{transactionType}, #{quantity}, #{priceAtTransaction}, now())
+    </insert>
+
+</mapper>
