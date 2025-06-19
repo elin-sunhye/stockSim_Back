@@ -1,24 +1,14 @@
 package com.elin.stocksim_back.controller;
 
 import com.elin.stocksim_back.dto.request.ReqCommonListDto;
-import com.elin.stocksim_back.dto.request.stock.ReqBuyStock;
-import com.elin.stocksim_back.security.principal.PrincipalUser;
 import com.elin.stocksim_back.service.StockService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.ibatis.javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
-import java.io.UnsupportedEncodingException;
-import java.util.Map;
 
 @Tag(name = "stock", description = "금융위원회_주식시세정보 API")
 @RestController
@@ -70,19 +60,5 @@ public class StockController {
 //        return ResponseEntity.ok().body(resultMap.getBody());
 
         return ResponseEntity.ok().body(stockService.getStockList());
-    }
-
-    @Operation(summary = "주식 매수", description = "주식 사기")
-    @PostMapping("/buyStock")
-    public ResponseEntity<String> buyStock(
-            @AuthenticationPrincipal PrincipalUser principalUser,
-            @RequestBody ReqBuyStock req
-    ) {
-        if (stockService.buyPortfolio(principalUser.getUser().getUserId(), req.getStockId(), req.getQuantity())) {
-            return ResponseEntity.ok().body("매수 성공");
-        } else {
-            return ResponseEntity.badRequest().body("매수 실패");
-        }
-
     }
 }
