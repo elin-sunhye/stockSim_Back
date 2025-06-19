@@ -15,11 +15,11 @@ spring:
 
 server:
   port: 8080
-react:
-  server:
-    protocol: http
-    host: localhost
-    port: 3000
+#react:
+#  server:
+#    protocol: http
+#    host: localhost
+#    port: 3000
 
 ---
 spring:

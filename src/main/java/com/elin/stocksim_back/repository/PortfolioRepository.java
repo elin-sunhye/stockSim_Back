@@ -29,7 +29,7 @@ public class PortfolioRepository {
     }
 
     //    사용자 현재 보유 주식 업데이트 (매도, 매수)
-    public int updatePortfolioByUserIdAndStockId(int userId, int stockId, int quantity) {
+    public int updatePortfolioQuantityByUserIdAndStockId(int userId, int stockId, int quantity) {
         return portfolioMapper.updatePortfolioByUserIdAndStockId(userId, stockId, quantity);
     }
 

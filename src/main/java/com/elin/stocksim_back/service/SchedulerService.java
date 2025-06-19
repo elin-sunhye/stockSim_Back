@@ -10,6 +10,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +18,7 @@ import org.springframework.web.client.RestTemplate;
 
 
 @Service
+@EnableScheduling
 public class SchedulerService {
 
     @Autowired
@@ -39,7 +41,7 @@ public class SchedulerService {
     @Scheduled(cron = "${schedule.cron}")
     @Transactional(rollbackFor = Exception.class)
     public void upsertStock() throws JsonProcessingException {
-//        매일 밤 12시에 실행해서 realStock entity를 stock emtity로 변경해서 Stock_tb에 저장하는 코드 필요
+//        매일 밤 12시에 실행해서 realStock entity를 stock emtity로 변경해서 stock_tb에 저장하는 코드 필요
 
         final String NUM_OF_ROWS = "&numOfRows=300";
         final String PAGE_NO = "&pageNo=1";
